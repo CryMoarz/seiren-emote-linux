@@ -3,7 +3,7 @@ import argparse
 import sys
 import time
 
-from . import images
+from . import __version__, images
 from .device import Emote, DeviceNotFound, CommandFailed
 
 try:
@@ -36,6 +36,7 @@ def play(dev, frames, loop):
 def main(argv=None):
     p = argparse.ArgumentParser(prog="emote",
                                 description="Control the Razer Seiren Emote LED display")
+    p.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     sub.add_parser("info", help="show firmware, serial and brightness")
@@ -71,7 +72,10 @@ def main(argv=None):
                 dev.set_pixels(px)
                 images.save_state(pixels=px)
             elif a.cmd == "image":
-                frames = images.load_image(a.file)
+                try:
+                    frames = images.load_image(a.file)
+                except OSError as e:
+                    sys.exit(f"Couldn't open image: {e}")
                 if len(frames) == 1:
                     dev.set_pixels(frames[0][0])
                     images.save_state(pixels=frames[0][0])
@@ -92,8 +96,13 @@ def main(argv=None):
                 st = images.load_state()
                 if "brightness" in st:
                     dev.set_brightness(st["brightness"])
+                frames = None
                 if st.get("image_path"):
-                    frames = images.load_image(st["image_path"])
+                    try:
+                        frames = images.load_image(st["image_path"])
+                    except OSError:
+                        pass  # animation file moved or deleted: fall back to pixels
+                if frames:
                     play(dev, frames, loop=len(frames) > 1)
                 elif "pixels" in st:
                     dev.set_pixels(st["pixels"])

@@ -40,7 +40,7 @@ class DeviceWorker(threading.Thread):
         GLib.idle_add(self.on_status, text, ok)
 
     def _connect(self):
-        from .device import Emote, DeviceNotFound
+        from .device import Emote, DeviceNotFound, CommandFailed
         import usb.core
         try:
             self.dev = Emote(reconnect_timeout=3)
@@ -60,6 +60,9 @@ class DeviceWorker(threading.Thread):
                 self._status("No permission: install udev rule", False)
             else:
                 self._status(f"USB error: {e}", False)
+        except CommandFailed as e:  # e.g. still busy right after plug-in; retry later
+            self.dev = None
+            self._status(f"Mic not ready: {e}", False)
 
     def run(self):
         self._connect()

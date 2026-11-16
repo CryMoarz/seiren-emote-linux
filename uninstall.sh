@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 PREFIX="${PREFIX:-$HOME/.local}"
+systemctl --user stop seiren-emote-restore.service 2>/dev/null || true
 rm -rf "$PREFIX/share/seiren-emote" "$PREFIX/bin/emote" \
        "$PREFIX/share/applications/seiren-emote.desktop" \
        "$HOME/.config/systemd/user/seiren-emote-restore.service"

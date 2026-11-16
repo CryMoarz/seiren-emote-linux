@@ -30,6 +30,7 @@ class DeviceTests(unittest.TestCase):
         p = mock.patch.object(device.usb.core, "find", return_value=self.fake)
         p.start(); self.addCleanup(p.stop)
         q = mock.patch.object(device.time, "sleep"); q.start(); self.addCleanup(q.stop)
+        r = mock.patch.object(device.usb.util, "dispose_resources"); r.start(); self.addCleanup(r.stop)
 
     def test_crc(self):
         r = device.build_report(0x00, 0x81, 0x02)
@@ -70,6 +71,22 @@ class DeviceTests(unittest.TestCase):
             images.save_png(images.preset("star"), p)
             frames = images.load_image(p)
             self.assertEqual(frames[0][0], images.preset("star"))
+
+    def test_restore_falls_back_when_animation_is_gone(self):
+        import tempfile, os
+        from seiren_emote import cli
+        with tempfile.TemporaryDirectory() as d, \
+                mock.patch.dict(os.environ, {"XDG_CONFIG_HOME": d}):
+            images.save_state(pixels=images.preset("heart"))
+            images.save_state(image_path=os.path.join(d, "deleted.gif"))
+            cli.main(["restore"])
+        self.assertEqual(len(self.fake.sent), 5)  # heart drawn: 4 rows + apply
+
+    def test_image_cli_missing_file(self):
+        from seiren_emote import cli
+        with self.assertRaises(SystemExit) as cm:
+            cli.main(["image", "/nonexistent/emote.png"])
+        self.assertIn("Couldn't open image", str(cm.exception))
 
 
 if __name__ == "__main__":

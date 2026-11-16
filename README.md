@@ -1,5 +1,6 @@
 # Razer Seiren Emote for Linux
 
+[![Tests](https://github.com/CryMoarz/seiren-emote-linux/actions/workflows/tests.yml/badge.svg)](https://github.com/CryMoarz/seiren-emote-linux/actions/workflows/tests.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![Platform: Linux](https://img.shields.io/badge/platform-Linux-informational)
 ![Python 3](https://img.shields.io/badge/python-3-blue)
@@ -55,7 +56,7 @@ You get the best results by drawing at exactly 8×8 pixels. Larger images are sc
 ## Troubleshooting
 
 - **"not found"**: check `lsusb | grep 1532:0f1b`. If only `1532:0524` shows up, replug the mic or try another cable/port.
-- **"Permission denied" / "No permission"**: the udev rule isn't active yet. Replug the mic. If it persists, make sure you're in the `plugdev` group (`groups`; add with `sudo usermod -aG plugdev $USER`, then log out and back in).
+- **"Permission denied" / "No permission"**: the udev rule isn't active yet. Replug the mic. If it persists on Debian, Ubuntu or Mint, make sure you're in the `plugdev` group (`groups`; add with `sudo usermod -aG plugdev $USER`, then log out and back in). Other distros don't have that group, and the rule gives access to whoever is logged in at the desktop.
 - **Display flickers off / random disconnects**: usually the USB cable. The tool reconnects automatically, but a bad cable will make it happen often.
 - **Animations are slow**: each frame takes 5 USB packets, so expect roughly 4–5 fps max.
 
@@ -82,7 +83,7 @@ Not to the mic's onboard memory yet (help wanted). Instead, a small background s
 |---|---|---|
 | Linux Mint 22.3 Cinnamon (Ubuntu 24.04 base), kernel 7.0, X11 | 1.0 | ✅ desktop app, images, presets |
 
-Got it working on something else? Please open an issue or PR to add a row.
+Got it working on something else? Please [tell us with this short form](https://github.com/CryMoarz/seiren-emote-linux/issues/new?template=works_on_my_setup.yml) so it can be added here.
 
 ## How it works
 
@@ -96,7 +97,7 @@ Issues and PRs are welcome, especially:
 - OpenRazer / Polychromatic integration
 - testing on other distros and firmware versions
 
-Run the tests (no mic needed): `python3 -m unittest tests/test_device.py`
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to run the tests (no mic needed) and try changes on the real mic.
 
 ## Disclaimer
 

@@ -5,6 +5,6 @@ Comment=Draw on the Razer Seiren Emote LED display
 Exec=@BINDIR@/emote gui
 Icon=@ICON@
 Terminal=false
-Categories=Utility;Settings;HardwareSettings;
+Categories=Utility;
 Keywords=razer;seiren;microphone;mic;led;emote;display;pixel;gif;synapse;
 StartupWMClass=io.github.seiren_emote_linux

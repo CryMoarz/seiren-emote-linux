@@ -20,9 +20,9 @@ if [ "$missing" = 1 ]; then
     echo "==> Installing dependencies with apt (needs sudo)"
     sudo apt-get install -y python3-usb python3-pil python3-gi python3-gi-cairo gir1.2-gtk-4.0
   elif command -v dnf >/dev/null; then
-    sudo dnf install -y python3-pyusb python3-pillow python3-gobject gtk4
+    sudo dnf install -y python3-pyusb python3-pillow python3-gobject python3-cairo gtk4
   elif command -v pacman >/dev/null; then
-    sudo pacman -S --needed python-pyusb python-pillow python-gobject gtk4
+    sudo pacman -S --needed python-pyusb python-pillow python-gobject python-cairo gtk4
   else
     echo "Please install: pyusb, Pillow, PyGObject, GTK 4 — then re-run." >&2
     exit 1

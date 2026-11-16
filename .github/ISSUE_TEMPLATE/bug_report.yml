@@ -1,0 +1,30 @@
+name: Bug report
+description: Something doesn't work with your Seiren Emote
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead? Paste any error message.
+    validations:
+      required: true
+  - type: input
+    id: distro
+    attributes:
+      label: Distro and desktop
+      placeholder: e.g. Linux Mint 22.3 Cinnamon, X11
+    validations:
+      required: true
+  - type: textarea
+    id: info
+    attributes:
+      label: Output of `emote --version` and `emote info`
+      render: text
+  - type: textarea
+    id: lsusb
+    attributes:
+      label: Output of `lsusb | grep 1532`
+      render: text
+    validations:
+      required: true
