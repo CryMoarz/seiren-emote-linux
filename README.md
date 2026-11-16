@@ -7,7 +7,7 @@
 
 **Control the Razer Seiren Emote's 8×8 LED emote display on Linux, without Razer Synapse.** Draw pixel art, show images and animated GIFs, pick a built-in emote, and set the brightness, from a desktop app or the command line. Your emote comes back automatically when you plug the mic in.
 
-Razer only supports the display through Synapse on Windows, and OpenRazer doesn't cover this mic. This is a free, open-source alternative that talks to the mic directly over USB. The installer supports Ubuntu, Debian, Fedora and Arch.
+Razer only supports the display through Synapse on Windows, and OpenRazer doesn't cover this mic. This is a free, open-source alternative that talks to the mic directly over USB. The installer supports Linux Mint, Ubuntu, Debian, Fedora and Arch.
 
 ![Seiren Emote Linux app connected to the mic, with white pixel art drawn on the 8x8 LED display](docs/screenshot.png)
 
@@ -31,7 +31,7 @@ cd seiren-emote-linux
 
 The installer puts everything under `~/.local`, installs missing dependencies with your package manager (apt, dnf or pacman), and adds one udev rule (this asks for sudo). **Unplug and replug the mic once afterwards.**
 
-Dependencies, if you'd rather install them yourself: pyusb, Pillow, PyGObject + GTK 4 (and `python3-gi-cairo` on Debian/Ubuntu).
+Dependencies, if you'd rather install them yourself: pyusb, Pillow, PyGObject + GTK 4 (and `python3-gi-cairo` on Debian, Ubuntu and Mint).
 
 To remove: `./uninstall.sh`
 
@@ -80,7 +80,7 @@ Not to the mic's onboard memory yet (help wanted). Instead, a small background s
 
 | Distro | Mic firmware | Status |
 |---|---|---|
-| Ubuntu 24.04 | 1.0 | ✅ images, presets |
+| Linux Mint 22.3 Cinnamon (Ubuntu 24.04 base), kernel 7.0, X11 | 1.0 | ✅ desktop app, images, presets |
 
 Got it working on something else? Please open an issue or PR to add a row.
 
