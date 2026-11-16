@@ -1,0 +1,8 @@
+[Unit]
+Description=Restore the Razer Seiren Emote display image
+
+[Service]
+Type=simple
+# give udev a moment to apply permissions after plug-in
+ExecStartPre=/bin/sleep 1
+ExecStart=@BINDIR@/emote restore

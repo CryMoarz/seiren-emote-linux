@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Seiren Emote
+Comment=Draw on the Razer Seiren Emote LED display
+Exec=@BINDIR@/emote gui
+Icon=@ICON@
+Terminal=false
+Categories=Utility;Settings;HardwareSettings;
+Keywords=razer;microphone;led;emote;
+StartupWMClass=io.github.seiren_emote_linux

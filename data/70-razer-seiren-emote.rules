@@ -1,0 +1,7 @@
+# Razer Seiren Emote LED display controller (1532:0F1B)
+# NOTE: must sort before 73-seat-late.rules, or TAG+="uaccess" is ignored.
+# - lets the logged-in user (uaccess) and the plugdev group talk to it without sudo
+# - starts the user's restore service when it's plugged in, so the last
+#   image comes back automatically
+SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTR{idVendor}=="1532", ATTR{idProduct}=="0f1b", \
+  GROUP="plugdev", MODE="0660", TAG+="uaccess", TAG+="systemd", ENV{SYSTEMD_USER_WANTS}+="seiren-emote-restore.service"
