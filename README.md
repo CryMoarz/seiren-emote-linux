@@ -87,7 +87,7 @@ Not to the mic's onboard memory yet (help wanted). Instead, a small background s
 
 | Distro | Mic firmware | Status |
 |---|---|---|
-| Linux Mint 22.3 Cinnamon (Ubuntu 24.04 base), kernel 7.0, X11 | 1.0 | ✅ desktop app, images, presets |
+| Linux Mint 22.3 Cinnamon (Ubuntu 24.04 base), kernel 7.0, X11 | 1.0 | ✅ desktop app, images, presets, rotation |
 
 Got it working on something else? Please [tell us with this short form](https://github.com/CryMoarz/seiren-emote-linux/issues/new?template=works_on_my_setup.yml) so it can be added here.
 
