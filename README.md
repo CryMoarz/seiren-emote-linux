@@ -9,7 +9,7 @@
 
 Razer only supports the display through Synapse on Windows, and OpenRazer doesn't cover this mic. This is a free, open-source alternative that talks to the mic directly over USB. The installer supports Ubuntu, Debian, Fedora and Arch.
 
-![Seiren Emote Linux app drawing a red heart on the mic's 8x8 LED display](docs/screenshot.png)
+![Seiren Emote Linux app connected to the mic, with white pixel art drawn on the 8x8 LED display](docs/screenshot.png)
 
 > The microphone audio already works on Linux out of the box. This project only adds control of the LED display.
 
