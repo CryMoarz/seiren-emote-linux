@@ -1,8 +1,15 @@
-# seiren-emote-linux
+# Razer Seiren Emote for Linux
 
-Linux support for the **Razer Seiren Emote** microphone's 8×8 LED display. Razer only supports it through Synapse on Windows, and OpenRazer doesn't cover it. This project lets you draw on it, show images and animated GIFs, and have your emote come back automatically when you plug the mic in.
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![Platform: Linux](https://img.shields.io/badge/platform-Linux-informational)
+![Python 3](https://img.shields.io/badge/python-3-blue)
+![GTK 4](https://img.shields.io/badge/GTK-4-green)
 
-![Screenshot](docs/screenshot.png)
+**Control the Razer Seiren Emote's 8×8 LED emote display on Linux, without Razer Synapse.** Draw pixel art, show images and animated GIFs, pick a built-in emote, and set the brightness, from a desktop app or the command line. Your emote comes back automatically when you plug the mic in.
+
+Razer only supports the display through Synapse on Windows, and OpenRazer doesn't cover this mic. This is a free, open-source alternative that talks to the mic directly over USB. The installer supports Ubuntu, Debian, Fedora and Arch.
+
+![Seiren Emote Linux app drawing a red heart on the mic's 8x8 LED display](docs/screenshot.png)
 
 > The microphone audio already works on Linux out of the box. This project only adds control of the LED display.
 
@@ -52,6 +59,23 @@ You get the best results by drawing at exactly 8×8 pixels. Larger images are sc
 - **Display flickers off / random disconnects**: usually the USB cable. The tool reconnects automatically, but a bad cable will make it happen often.
 - **Animations are slow**: each frame takes 5 USB packets, so expect roughly 4–5 fps max.
 
+## FAQ
+
+**Does the Razer Seiren Emote work on Linux?**
+Yes. The microphone and headphone jack work out of the box as a standard USB audio device. The LED emote display is the part that needs this project.
+
+**Do I need Razer Synapse or Windows?**
+No. Everything runs natively on Linux, and you never need Synapse, Windows or a VM.
+
+**Does OpenRazer or Polychromatic support the Seiren Emote?**
+Not yet. [PROTOCOL.md](PROTOCOL.md) documents everything needed to add it.
+
+**Can it show animated GIFs?**
+Yes: `emote image dance.gif --loop`. Expect about 4–5 frames per second.
+
+**Is the emote saved on the mic?**
+Not to the mic's onboard memory yet (help wanted). Instead, a small background service re-applies your last image or animation whenever the mic is plugged in.
+
 ## Tested on
 
 | Distro | Mic firmware | Status |
@@ -80,4 +104,4 @@ Not affiliated with or endorsed by Razer Inc. "Razer" and "Seiren" are trademark
 
 ## License
 
-MIT
+[MIT](LICENSE). You're free to use, copy, modify, share and sell it, in personal or commercial projects. Just keep the license notice.
