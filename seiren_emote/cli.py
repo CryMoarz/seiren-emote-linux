@@ -49,6 +49,10 @@ def main(argv=None):
     co.add_argument("hex", type=_rgb, help="RRGGBB, e.g. ff0000")
     br = sub.add_parser("brightness", help="set brightness 0-255")
     br.add_argument("value", type=int)
+    ro = sub.add_parser("rotate", help="turn the picture clockwise, e.g. 180 for a mic mounted upside down")
+    ro.add_argument("degrees", type=int, choices=[0, 90, 180, 270])
+    fl = sub.add_parser("flip", help="mirror the picture left/right")
+    fl.add_argument("state", choices=["on", "off"])
     sub.add_parser("off", help="turn the display off")
     sub.add_parser("restore", help="re-apply the last saved image and brightness")
     sub.add_parser("gui", help="open the desktop app")
@@ -61,8 +65,9 @@ def main(argv=None):
         from .gui import main as gui_main
         return gui_main()
 
+    st = images.load_state()
     try:
-        with Emote() as dev:
+        with Emote(rotate=st.get("rotate", 0), flip=st.get("flip", False)) as dev:
             if a.cmd == "info":
                 print(f"firmware:   {dev.firmware()}")
                 print(f"serial:     {dev.serial()}")
@@ -89,11 +94,19 @@ def main(argv=None):
             elif a.cmd == "brightness":
                 dev.set_brightness(a.value)
                 images.save_state(brightness=a.value)
+            elif a.cmd in ("rotate", "flip"):
+                if a.cmd == "rotate":
+                    dev.rotate = a.degrees
+                    images.save_state(rotate=a.degrees)
+                else:
+                    dev.flip = a.state == "on"
+                    images.save_state(flip=dev.flip)
+                if "pixels" in st and not st.get("image_path"):
+                    dev.set_pixels(st["pixels"])  # redraw so the change shows right away
             elif a.cmd == "off":
                 dev.clear()
                 images.save_state(pixels=images.blank())
             elif a.cmd == "restore":
-                st = images.load_state()
                 if "brightness" in st:
                     dev.set_brightness(st["brightness"])
                 frames = None

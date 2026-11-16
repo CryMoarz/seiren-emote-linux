@@ -51,6 +51,16 @@ def build_report(cls, cid, size, args=b""):
     return r
 
 
+def orient(pixels, rotate=0, flip=False):
+    """Mirror left/right (if flip), then turn the picture clockwise by
+    `rotate` degrees (0/90/180/270), e.g. for a mic mounted upside down."""
+    if flip:
+        pixels = [row[::-1] for row in pixels]
+    for _ in range(rotate // 90 % 4):
+        pixels = [list(r) for r in zip(*pixels[::-1])]
+    return pixels
+
+
 def grid_to_rows(pixels):
     """8x8 pixels (pixels[y][x], y=0 is the TOP row, like an image) ->
     4 controller rows of 16. LED 0 is bottom-left, filling left->right,
@@ -64,8 +74,9 @@ def grid_to_rows(pixels):
 
 
 class Emote:
-    def __init__(self, reconnect_timeout=10.0):
+    def __init__(self, reconnect_timeout=10.0, rotate=0, flip=False):
         self.reconnect_timeout = reconnect_timeout
+        self.rotate, self.flip = rotate, flip  # applied in set_pixels
         self.dev = _find()
         if self.dev is None:
             raise DeviceNotFound("Razer Seiren Emote display (1532:0F1B) not found")
@@ -141,6 +152,7 @@ class Emote:
 
     def set_pixels(self, pixels):
         """Draw an 8x8 image. pixels[y][x] = (r,g,b), y=0 is the top row."""
+        pixels = orient(pixels, self.rotate, self.flip)
         for row_idx, row in enumerate(grid_to_rows(pixels)):
             rgb = bytes(c for px in row for c in px)
             self.send(0x0F, 0x03, len(rgb) + 5,

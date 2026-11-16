@@ -19,6 +19,7 @@ Razer only supports the display through Synapse on Windows, and OpenRazer doesn'
 - **Desktop app (GTK 4):** paint pixels, pick colors, load PNG/GIF, built-in presets, brightness slider
 - **Command line:** `emote preset heart`, `emote image cat.gif --loop`, `emote color ff0000`, `emote off`
 - **No sudo:** a udev rule gives your user access
+- **Any mounting:** rotate or mirror the picture, e.g. for a mic hanging upside down from a boom arm
 - **Restores on plug-in:** your last image (or animation) is re-applied automatically
 - Survives a flaky USB cable: reconnects if the display controller drops off the bus
 
@@ -47,6 +48,8 @@ emote image heart.png         # any image, scaled to 8x8 (pixel art looks best)
 emote image dance.gif --loop  # animated GIF, Ctrl+C to stop
 emote color 00ff88            # solid color
 emote brightness 120          # 0-255
+emote rotate 180              # mic mounted upside down? 0, 90, 180 or 270 (clockwise)
+emote flip on                 # mirror left/right (on/off)
 emote off
 emote info                    # firmware / serial / brightness
 ```
@@ -73,6 +76,9 @@ Not yet. [PROTOCOL.md](PROTOCOL.md) documents everything needed to add it.
 
 **Can it show animated GIFs?**
 Yes: `emote image dance.gif --loop`. Expect about 4–5 frames per second.
+
+**My mic hangs upside down from a boom arm. Can I flip the display?**
+Yes: `emote rotate 180`, or use **Orientation** in the app. The setting is saved and applies to everything you show, including after replugging.
 
 **Is the emote saved on the mic?**
 Not to the mic's onboard memory yet (help wanted). Instead, a small background service re-applies your last image or animation whenever the mic is plugged in.

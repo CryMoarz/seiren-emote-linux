@@ -59,6 +59,34 @@ class DeviceTests(unittest.TestCase):
             self.assertEqual(tuple(f[8:13]), (0, 0, i, 0, 15))
         self.assertEqual(tuple(frames[4][6:11]), (0x0F, 0x02, 0x00, 0x04, 0x08))
 
+    def test_orient(self):
+        px = [[(y, x, 0) for x in range(8)] for y in range(8)]
+        self.assertEqual(device.orient(px), px)
+        self.assertEqual(device.orient(px, 360), px)
+        self.assertEqual(device.orient(px, 90)[0][0], px[7][0])    # clockwise
+        self.assertEqual(device.orient(px, 180)[0][0], px[7][7])
+        self.assertEqual(device.orient(px, 270)[0][0], px[0][7])
+        self.assertEqual(device.orient(px, flip=True)[0][0], px[0][7])
+
+    def test_set_pixels_rotated(self):
+        px = images.blank()
+        px[0][0] = (255, 0, 0)  # top-left...
+        device.Emote(rotate=180).set_pixels(px)
+        row0 = self.fake.sent[0][13:13 + 48]
+        self.assertEqual(tuple(row0[7 * 3:8 * 3]), (255, 0, 0))  # ...lands bottom-right (LED 7)
+
+    def test_rotate_cli_saves_and_redraws(self):
+        import tempfile, os
+        from seiren_emote import cli
+        with tempfile.TemporaryDirectory() as d, \
+                mock.patch.dict(os.environ, {"XDG_CONFIG_HOME": d}):
+            images.save_state(pixels=images.preset("heart"))
+            cli.main(["rotate", "180"])
+            cli.main(["flip", "on"])
+            st = images.load_state()
+        self.assertEqual((st["rotate"], st["flip"]), (180, True))
+        self.assertEqual(len(self.fake.sent), 10)  # redrawn after each change
+
     def test_presets_are_8x8(self):
         for name, rows in images.PRESETS.items():
             self.assertEqual(len(rows), 8, name)

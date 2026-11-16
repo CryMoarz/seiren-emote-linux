@@ -79,9 +79,13 @@ def _state_path():
     return Path(base) / "seiren-emote" / "state.json"
 
 
-def save_state(pixels=None, brightness=None, image_path=None):
+def save_state(pixels=None, brightness=None, image_path=None, rotate=None, flip=None):
     p = _state_path()
     state = load_state()
+    if rotate is not None:
+        state["rotate"] = int(rotate) % 360
+    if flip is not None:
+        state["flip"] = bool(flip)
     if pixels is not None:
         state["pixels"] = [[list(c) for c in row] for row in pixels]
         state.pop("image_path", None)

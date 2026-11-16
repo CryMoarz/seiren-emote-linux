@@ -29,12 +29,16 @@ class DeviceWorker(threading.Thread):
         self.dev = None
         self.last_pixels = None
         self.last_brightness = None
+        self.rotate, self.flip = 0, False
 
     def push_pixels(self, px):
         self.q.put(("pixels", [list(r) for r in px]))
 
     def push_brightness(self, v):
         self.q.put(("brightness", int(v)))
+
+    def push_orientation(self, rotate, flip):
+        self.q.put(("orientation", (rotate, flip)))
 
     def _status(self, text, ok):
         GLib.idle_add(self.on_status, text, ok)
@@ -43,7 +47,7 @@ class DeviceWorker(threading.Thread):
         from .device import Emote, DeviceNotFound, CommandFailed
         import usb.core
         try:
-            self.dev = Emote(reconnect_timeout=3)
+            self.dev = Emote(reconnect_timeout=3, rotate=self.rotate, flip=self.flip)
             fw = self.dev.firmware()
             self._status(f"Connected · fw {fw}", True)
             # re-apply state after (re)connect
@@ -78,15 +82,20 @@ class DeviceWorker(threading.Thread):
             for kind, val in items:
                 if kind == "pixels":
                     self.last_pixels = val
-                else:
+                elif kind == "brightness":
                     self.last_brightness = val
+                else:
+                    self.rotate, self.flip = val
             if self.dev is None:
                 self._connect()
                 continue
+            kinds = {k for k, _ in items}
             try:
-                if any(k == "brightness" for k, _ in items):
+                if "brightness" in kinds:
                     self.dev.set_brightness(self.last_brightness)
-                if any(k == "pixels" for k, _ in items):
+                if "orientation" in kinds:
+                    self.dev.rotate, self.dev.flip = self.rotate, self.flip
+                if kinds & {"pixels", "orientation"} and self.last_pixels is not None:
                     self.dev.set_pixels(self.last_pixels)
             except Exception as e:  # unplugged mid-write, etc.
                 self.dev = None
@@ -194,8 +203,23 @@ class EmoteWindow(Gtk.ApplicationWindow):
         self.bright.connect("value-changed", self._brightness_changed)
         side.append(self.bright)
 
+        # orientation, e.g. for a mic mounted upside down
+        side.append(self._heading("Orientation"))
+        orient_row = Gtk.Box(spacing=12)
+        orient_row.append(Gtk.Label(label="Rotate"))
+        self.rotate_dd = Gtk.DropDown.new_from_strings(["0°", "90°", "180°", "270°"])
+        self.rotate_dd.set_selected(state.get("rotate", 0) // 90 % 4)
+        self.rotate_dd.connect("notify::selected", self._orientation_changed)
+        orient_row.append(self.rotate_dd)
+        self.mirror = Gtk.CheckButton(label="Mirror", active=state.get("flip", False))
+        self.mirror.connect("toggled", self._orientation_changed)
+        orient_row.append(self.mirror)
+        side.append(orient_row)
+
         # device worker
         self.worker = DeviceWorker(self._on_status)
+        self.worker.rotate = state.get("rotate", 0)
+        self.worker.flip = state.get("flip", False)
         if "brightness" in state:
             self.worker.last_brightness = state["brightness"]
         self.worker.last_pixels = self.pixels
@@ -302,6 +326,11 @@ class EmoteWindow(Gtk.ApplicationWindow):
         v = int(scale.get_value())
         self.worker.push_brightness(v)
         images.save_state(brightness=v)
+
+    def _orientation_changed(self, *_):
+        rotate, flip = self.rotate_dd.get_selected() * 90, self.mirror.get_active()
+        self.worker.push_orientation(rotate, flip)
+        images.save_state(rotate=rotate, flip=flip)
 
     def _file_filter(self):
         f = Gtk.FileFilter(name="Images")
